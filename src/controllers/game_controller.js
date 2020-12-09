@@ -5,6 +5,9 @@ export default class extends Controller {
 
   connect() {
     this.gameStarted = false
+    this.boardSize = 20
+    this.liveCells = {}
+    this.cellsToBeProcessed = []
 
     this.renderBoard()
   }
@@ -32,8 +35,6 @@ export default class extends Controller {
     if (timeInput <= 0) {
       this.timerContainerTarget.value = 0.1
     }
-
-    console.log('hello')
   }
 
   get timerText() {
@@ -45,16 +46,47 @@ export default class extends Controller {
     }
   }
 
+  updateCell(event) {
+    event.preventDefault()
+
+    const cellID = event.target.id
+    const cellXcoordinate = cellID % this.boardSize
+    var cellYcoordinate = 0
+    if (cellID>0){
+      cellYcoordinate = parseInt(cellID / this.boardSize)
+    }
+
+    if (this.liveCells.hasOwnProperty(cellID)){
+      delete this.liveCells[cellID]
+    } else {
+      var newCell = {
+        id: cellID,
+        xCoord: cellXcoordinate,
+        yCoord: cellYcoordinate,
+        alive: true,
+        numOfNeighbors: 0,
+      }
+      this.liveCells[cellID] = newCell
+    }
+
+    this.renderBoard()
+  }
+
   renderBoard() {
-    const boardSize = 20
     const board = this.gameBoardTarget
     board.innerHTML = ""
 
     let cells = ""
+    let cellID = 0
 
-    for(let row=0; row<boardSize; row++) {
-      for(let col=0; col<boardSize; col++) {
-        cells += '<div class="board-cell"></div>'
+    for(let row=0; row < this.boardSize; row++) {
+      for(let col=0; col < this.boardSize; col++) {
+        if (this.liveCells[cellID]) {
+          cells += `<div data-action="click->game#updateCell" class="board-cell cell-alive" id="${cellID}"></div>`
+        } else {
+          cells += `<div data-action="click->game#updateCell" class="board-cell" id="${cellID}"></div>`
+        }
+        cellID++
       }
     }
 

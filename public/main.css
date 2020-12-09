@@ -40,6 +40,10 @@ body {
   border: solid 1px #f0f0f0;
 }
 
+.cell-alive {
+  background: black;
+}
+
 .options-container {
   display: flex;
   margin-top: 5px;
