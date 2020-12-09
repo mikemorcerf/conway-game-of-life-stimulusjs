@@ -49,27 +49,29 @@ export default class extends Controller {
   updateCell(event) {
     event.preventDefault()
 
-    const cellID = event.target.id
-    const cellXcoordinate = cellID % this.boardSize
-    var cellYcoordinate = 0
-    if (cellID>0){
-      cellYcoordinate = parseInt(cellID / this.boardSize)
-    }
-
-    if (this.liveCells.hasOwnProperty(cellID)){
-      delete this.liveCells[cellID]
-    } else {
-      var newCell = {
-        id: cellID,
-        xCoord: cellXcoordinate,
-        yCoord: cellYcoordinate,
-        alive: true,
-        numOfNeighbors: 0,
+    if (!this.gameStarted) {
+      const cellID = event.target.id
+      const cellXcoordinate = cellID % this.boardSize
+      var cellYcoordinate = 0
+      if (cellID>0){
+        cellYcoordinate = parseInt(cellID / this.boardSize)
       }
-      this.liveCells[cellID] = newCell
+  
+      if (this.liveCells.hasOwnProperty(cellID)){
+        delete this.liveCells[cellID]
+      } else {
+        var newCell = {
+          id: cellID,
+          xCoord: cellXcoordinate,
+          yCoord: cellYcoordinate,
+          alive: true,
+          numOfNeighbors: 0,
+        }
+        this.liveCells[cellID] = newCell
+      }
+  
+      this.renderBoard()
     }
-
-    this.renderBoard()
   }
 
   renderBoard() {
