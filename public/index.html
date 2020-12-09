@@ -12,18 +12,26 @@
     <div class="title-container">
       <h1>GAME OF LIFE</h1>
     </div>
-    <div class="game-container">
-  
+
+    <div data-game-target="gameBoard" class="game-container">
+      <!-- This is where the board is rendered -->
     </div>
+
     <div class="options-container">
-      <button data-action="click->game#startGame" data-game-target="playButton">▶︎</button>
+      <button data-action="click->game#startGame"
+              data-game-target="playButton">▶︎</button>
+
       <div class="timer-container">
-        <input type="number">
-        <div class="timer-text-container">
-          <p>seconds</p>
+        <input data-action="input->game#updateSpeed"
+               data-game-target="timerContainer"
+               type="number" value="1">
+
+        <div data-game-target="timerText" class="timer-text-container">
+          <p>second</p>
           <p>per cycle</p>
         </div>
       </div>
+
     </div>
   </div>
 </body>

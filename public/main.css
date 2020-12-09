@@ -23,10 +23,21 @@ body {
 }
 
 .game-container {
-  width: 500px;
-  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+
+  width: 502px;
+  height: 502px;
 
   border: 1px solid;
+}
+
+.board-cell {
+  width: 25px;
+  height: 25px;
+
+  background: white;
+  border: solid 1px #f0f0f0;
 }
 
 .options-container {
@@ -69,8 +80,17 @@ body {
 }
 
 .timer-container input {
+  font-size: large;
+
   width: 80px;
+
   margin: 0 5px;
+  padding: 0 10px;
+}
+
+.timer-container .timer--on {
+  background: #37a100;
+  border: none;
 }
 
 .timer-text-container {
