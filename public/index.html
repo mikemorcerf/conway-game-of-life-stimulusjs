@@ -4,8 +4,27 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="main.css">
   <script src="bundle.js" async></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1 data-controller="example"></h1>
+  <div data-controller='game' class="app-container">
+    <div class="title-container">
+      <h1>GAME OF LIFE</h1>
+    </div>
+    <div class="game-container">
+  
+    </div>
+    <div class="options-container">
+      <button data-action="click->game#startGame" data-game-target="playButton">▶︎</button>
+      <div class="timer-container">
+        <input type="number">
+        <div class="timer-text-container">
+          <p>seconds</p>
+          <p>per cycle</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -1,3 +1,78 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #ededed;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title-container {
+  margin: 20px 0 5px 0;
+}
+
+.game-container {
+  width: 500px;
+  height: 500px;
+
+  border: 1px solid;
+}
+
+.options-container {
+  display: flex;
+  margin-top: 5px;
+
+  height: 50px;
+  width: 500px;
+}
+
+.options-container button {
+  background: #c3ffa3;
+  font-size: large;
+
+  width: 100%;
+  height: 100%;
+
+  border-radius: 5px;
+  border: solid 1px #dbd9d9;
+
+  cursor: pointer;
+}
+
+.options-container button:hover {
+  background: #bbf59d;
+}
+
+.options-container button:active {
+  background: #b3eb96;
+}
+
+.options-container .timer--on {
+  border-color: #37a100;
+  border-width: 3px;
+}
+
+.timer-container {
+  display: flex;
+  width: 250px;
+}
+
+.timer-container input {
+  width: 80px;
+  margin: 0 5px;
+}
+
+.timer-text-container {
+  align-self: center;
 }
