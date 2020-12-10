@@ -11,8 +11,6 @@ body {
   background: #ededed;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  position: fixed;
 }
 
 .app-container {
@@ -30,15 +28,15 @@ body {
   display: flex;
   flex-wrap: wrap;
 
-  width: 502px;
-  height: 502px;
+  width: 702px;
+  height: 702px;
 
   border: 1px solid;
 }
 
 .board-cell {
-  width: 25px;
-  height: 25px;
+  width: 35px;
+  height: 35px;
 
   background: white;
   border: solid 1px #f0f0f0;
@@ -53,7 +51,7 @@ body {
   margin-top: 5px;
 
   height: 50px;
-  width: 500px;
+  width: 700px;
 }
 
 .options-container .small-buttons-container {
