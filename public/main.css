@@ -56,6 +56,18 @@ body {
   width: 500px;
 }
 
+.options-container .small-buttons-container {
+  display: flex;
+  justify-content: space-evenly;
+  min-width: 110px;
+  margin-right: 5px;
+}
+
+.options-container .small-buttons-container .timer--on {
+  background: #fa5143 !important;
+  cursor: wait !important;
+}
+
 .options-container button {
   background: #c3ffa3;
   font-size: large;
@@ -93,7 +105,7 @@ body {
 
 .timer-container {
   display: flex;
-  width: 250px;
+  min-width: 150px;
 }
 
 .timer-container input {
@@ -106,7 +118,8 @@ body {
 }
 
 .timer-container .timer--on {
-  background: #fa5143;
+  background: #fa5143 !important;
+  cursor: wait !important;
   border: none;
 }
 

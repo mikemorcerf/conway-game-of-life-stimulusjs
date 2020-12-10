@@ -2,7 +2,7 @@ import { Controller } from "stimulus"
 import RandExp from "randexp"
 
 export default class extends Controller {
-  static targets = ["gameBoard", "playButton", "timerContainer", "timerText"]
+  static targets = ["gameBoard", "dataButton", "playButton", "timerContainer", "timerText"]
 
   connect() {
     this.gameStarted = false
@@ -21,6 +21,9 @@ export default class extends Controller {
       this.gameStarted = false
       this.playButtonTarget.textContent="▶︎"
       this.playButtonTarget.classList.remove('timer--on')
+      this.dataButtonTargets.forEach(dataButton => {
+        dataButton.classList.remove('timer--on')
+      })
       this.timerContainerTarget.classList.remove('timer--on')
       this.timerContainerTarget.readOnly = false;
       this.stopRefreshing()
@@ -28,6 +31,9 @@ export default class extends Controller {
       this.gameStarted = true
       this.playButtonTarget.textContent="◼"
       this.playButtonTarget.classList.add('timer--on')
+      this.dataButtonTargets.forEach(dataButton => {
+        dataButton.classList.add('timer--on')
+      })
       this.timerContainerTarget.classList.add('timer--on')
       this.timerContainerTarget.readOnly = true;
       this.startRefreshing()
@@ -53,7 +59,7 @@ export default class extends Controller {
 
     const timeInput = this.timerContainerTarget.value
     if (timeInput <= 0) {
-      this.timerContainerTarget.value = 0.3
+      this.timerContainerTarget.value = 0.1
     }
   }
 
@@ -66,28 +72,40 @@ export default class extends Controller {
     }
   }
 
+  generateRandomData(event) {
+    event.preventDefault()
+
+    this.deleteAllLiveCells()
+
+  }
+
+  deleteAllData(event) {
+    event.preventDefault()
+
+    this.deleteAllLiveCells()
+    this.renderBoard()
+  }
+
   updateCell(event) {
     event.preventDefault()
 
     if (!this.gameStarted) {
       const cellID = event.target.id
-      const cellXcoordinate = cellID % this.boardSize
+      const cellXcoordinate = this.getCellXCoordinateFromCellId({ cellID })
       var cellYcoordinate = 0
       if (cellID>0){
-        cellYcoordinate = parseInt(cellID / this.boardSize)
+        cellYcoordinate = this.getCellYCoordinateFromCellId({ cellID })
       }
   
       if (this.liveCells.hasOwnProperty(cellID)){
         delete this.liveCells[cellID]
       } else {
-        var newCell = {
-          id: cellID,
-          xCoord: cellXcoordinate,
-          yCoord: cellYcoordinate,
+        var newCell = this.createNewCell({
+          cellID,
+          cellXcoordinate,
+          cellYcoordinate,
           alive: true,
-          numOfNeighbors: 0,
-          color: this.hexaColorGenerator()
-        }
+        })
         this.liveCells[cellID] = newCell
       }
   
@@ -112,19 +130,18 @@ export default class extends Controller {
             (row==startingXcoord+1)&&(col==startingYcoord+1)){
             continue
           } else {
-            const cellID = this.getCellID(row, col)
+            const cellID = this.getCellIdFromCoordinates({coordX:row, coordY:col})
             if(this.liveCells[cellID]){
               this.liveCells[liveCell].numOfNeighbors++
             } else {
               if(!this.deadCellsToBeProcessed[cellID]){
-                var newCell = {
-                  id: cellID,
-                  xCoord: row,
-                  yCoord: col,
+                var newCell = this.createNewCell({
+                  cellID,
+                  cellXcoordinate: row,
+                  cellYcoordinate: col,
                   alive: false,
-                  numOfNeighbors: 1,
-                  color: this.hexaColorGenerator()
-                }
+                  numOfNeighbors: 1
+                })
                 this.deadCellsToBeProcessed[cellID] = newCell
               } else {
                 this.deadCellsToBeProcessed[cellID].numOfNeighbors++
@@ -180,7 +197,35 @@ export default class extends Controller {
     return color
   }
 
-  getCellID(coordX, coordY) {
+  createNewCell({ cellID,
+                  cellXcoordinate,
+                  cellYcoordinate,
+                  alive,
+                  numOfNeighbors,
+                  cellColor}){
+    return {
+      id: cellID,
+      xCoord: cellXcoordinate,
+      yCoord: cellYcoordinate,
+      alive: alive,
+      numOfNeighbors: numOfNeighbors? numOfNeighbors : 0,
+      color: cellColor? cellColor : this.hexaColorGenerator()
+    }
+  }
+
+  deleteAllLiveCells(){
+    this.liveCells = {}
+  }
+
+  getCellIdFromCoordinates({coordX, coordY}) {
     return (((coordX+1) + (coordY*this.boardSize)) - 1)
+  }
+
+  getCellXCoordinateFromCellId({cellID}){
+    return cellID % this.boardSize
+  }
+
+  getCellYCoordinateFromCellId({cellID}){
+    return parseInt(cellID / this.boardSize)
   }
 }
