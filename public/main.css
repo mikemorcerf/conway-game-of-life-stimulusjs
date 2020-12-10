@@ -9,11 +9,13 @@
 body {
   -webkit-font-smoothing: antialiased;
   background: #ededed;
+  width: 600px;
+  height: 700px;
+  overflow: hidden;
+  position: fixed;
 }
 
 .app-container {
-  width: 600px;
-  height: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
