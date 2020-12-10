@@ -7,7 +7,8 @@ export default class extends Controller {
     this.gameStarted = false
     this.boardSize = 20
     this.liveCells = {}
-    this.cellsToBeProcessed = []
+    this.deadCellsToBeProcessed = {}
+    this.cellsForNextGeneration = {}
 
     this.renderBoard()
   }
@@ -19,10 +20,26 @@ export default class extends Controller {
       this.gameStarted = false
       this.playButtonTarget.classList.remove('timer--on')
       this.timerContainerTarget.classList.remove('timer--on')
+      this.timerContainerTarget.readOnly = false;
+      this.stopRefreshing()
     } else {
       this.gameStarted = true
       this.playButtonTarget.classList.add('timer--on')
       this.timerContainerTarget.classList.add('timer--on')
+      this.timerContainerTarget.readOnly = true;
+      this.startRefreshing()
+    }
+  }
+
+  startRefreshing() {
+    this.refreshTimer = setInterval(() => {
+      this.processLiveCells()
+    }, (this.timerContainerTarget.value * 1000))
+  }
+
+  stopRefreshing() {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer)
     }
   }
 
@@ -33,7 +50,7 @@ export default class extends Controller {
 
     const timeInput = this.timerContainerTarget.value
     if (timeInput <= 0) {
-      this.timerContainerTarget.value = 0.1
+      this.timerContainerTarget.value = 0.3
     }
   }
 
@@ -74,6 +91,63 @@ export default class extends Controller {
     }
   }
 
+  processLiveCells() {
+    this.deadCellsToBeProcessed = {}
+
+    for (var liveCell in this.liveCells) {
+      this.liveCells[liveCell].numOfNeighbors = 0
+      const startingXcoord = (this.liveCells[liveCell].xCoord - 1)
+      const startingYcoord = (this.liveCells[liveCell].yCoord - 1)
+      
+      for(let row=startingXcoord; row <= startingXcoord+2; row++) {
+        for(let col=startingYcoord; col <= startingYcoord+2; col++) {
+          if((row<0) ||
+            (row>=this.boardSize) ||
+            (col<0) ||
+            (col>=this.boardSize)||
+            (row==startingXcoord+1)&&(col==startingYcoord+1)){
+            continue
+          } else {
+            const cellID = this.getCellID(row, col)
+            if(this.liveCells[cellID]){
+              this.liveCells[liveCell].numOfNeighbors++
+            } else {
+              if(!this.deadCellsToBeProcessed[cellID]){
+                var newCell = {
+                  id: cellID,
+                  xCoord: row,
+                  yCoord: col,
+                  alive: false,
+                  numOfNeighbors: 1,
+                }
+                this.deadCellsToBeProcessed[cellID] = newCell
+              } else {
+                this.deadCellsToBeProcessed[cellID].numOfNeighbors++
+              }
+            }
+          }
+        }
+      }
+      const numOfNeighbors = this.liveCells[liveCell].numOfNeighbors
+      if(numOfNeighbors==2 || numOfNeighbors==3) {
+        this.cellsForNextGeneration[liveCell] = this.liveCells[liveCell]
+      }
+    }
+
+    for (var deadCell in this.deadCellsToBeProcessed) {
+      const numOfNeighbors = this.deadCellsToBeProcessed[deadCell].numOfNeighbors
+      if(numOfNeighbors==3) {
+        this.deadCellsToBeProcessed[deadCell].alive = true
+        this.cellsForNextGeneration[deadCell] = this.deadCellsToBeProcessed[deadCell]
+      }
+    }
+
+    this.liveCells = this.cellsForNextGeneration
+    this.cellsForNextGeneration = {}
+
+    this.renderBoard()
+  }
+
   renderBoard() {
     const board = this.gameBoardTarget
     board.innerHTML = ""
@@ -93,5 +167,9 @@ export default class extends Controller {
     }
 
     board.innerHTML = cells
+  }
+
+  getCellID(coordX, coordY) {
+    return (((coordX+1) + (coordY*this.boardSize)) - 1)
   }
 }
