@@ -45,7 +45,7 @@ body {
 }
 
 .cell-alive {
-  background: black;
+  border: solid 1px black;
 }
 
 .options-container {

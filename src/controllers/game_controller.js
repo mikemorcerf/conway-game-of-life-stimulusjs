@@ -1,4 +1,5 @@
 import { Controller } from "stimulus"
+import RandExp from "randexp"
 
 export default class extends Controller {
   static targets = ["gameBoard", "playButton", "timerContainer", "timerText"]
@@ -85,6 +86,7 @@ export default class extends Controller {
           yCoord: cellYcoordinate,
           alive: true,
           numOfNeighbors: 0,
+          color: this.hexaColorGenerator()
         }
         this.liveCells[cellID] = newCell
       }
@@ -121,6 +123,7 @@ export default class extends Controller {
                   yCoord: col,
                   alive: false,
                   numOfNeighbors: 1,
+                  color: this.hexaColorGenerator()
                 }
                 this.deadCellsToBeProcessed[cellID] = newCell
               } else {
@@ -160,7 +163,7 @@ export default class extends Controller {
     for(let row=0; row < this.boardSize; row++) {
       for(let col=0; col < this.boardSize; col++) {
         if (this.liveCells[cellID]) {
-          cells += `<div data-action="click->game#updateCell" class="board-cell cell-alive" id="${cellID}"></div>`
+          cells += `<div data-action="click->game#updateCell" class="board-cell cell-alive" id="${cellID}" style="background:${this.liveCells[cellID].color}"></div>`
         } else {
           cells += `<div data-action="click->game#updateCell" class="board-cell" id="${cellID}"></div>`
         }
@@ -169,6 +172,12 @@ export default class extends Controller {
     }
 
     board.innerHTML = cells
+  }
+
+  hexaColorGenerator(){
+    let color = '#'
+    color += new RandExp(/([a-f0-9]{6})/).gen();
+    return color
   }
 
   getCellID(coordX, coordY) {
