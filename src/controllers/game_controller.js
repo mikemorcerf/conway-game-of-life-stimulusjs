@@ -18,12 +18,14 @@ export default class extends Controller {
 
     if (this.gameStarted) {
       this.gameStarted = false
+      this.playButtonTarget.textContent="▶︎"
       this.playButtonTarget.classList.remove('timer--on')
       this.timerContainerTarget.classList.remove('timer--on')
       this.timerContainerTarget.readOnly = false;
       this.stopRefreshing()
     } else {
       this.gameStarted = true
+      this.playButtonTarget.textContent="◼"
       this.playButtonTarget.classList.add('timer--on')
       this.timerContainerTarget.classList.add('timer--on')
       this.timerContainerTarget.readOnly = true;

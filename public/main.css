@@ -78,8 +78,17 @@ body {
 }
 
 .options-container .timer--on {
-  border-color: #37a100;
+  background: #f28d85;
+  border-color: #fa5143;
   border-width: 3px;
+}
+
+.options-container .timer--on:hover {
+  background: #ff9c94;
+}
+
+.options-container .timer--on:active {
+  background: #e38d86;
 }
 
 .timer-container {
@@ -97,7 +106,7 @@ body {
 }
 
 .timer-container .timer--on {
-  background: #37a100;
+  background: #fa5143;
   border: none;
 }
 
