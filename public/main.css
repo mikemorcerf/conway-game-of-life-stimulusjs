@@ -50,14 +50,17 @@ body {
   display: flex;
   margin-top: 5px;
 
-  height: 50px;
+  height: 65px;
   width: 700px;
 }
 
 .options-container .small-buttons-container {
   display: flex;
   justify-content: space-evenly;
-  min-width: 110px;
+  min-width: 160px;
+}
+
+.options-container .small-buttons-container button {
   margin-right: 5px;
 }
 
