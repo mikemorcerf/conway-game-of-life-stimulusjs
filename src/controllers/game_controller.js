@@ -10,6 +10,8 @@ export default class extends Controller {
     this.liveCells = {}
     this.deadCellsToBeProcessed = {}
     this.cellsForNextGeneration = {}
+    this.animationIntervalInMilliseconds = 25
+    //this.animationCreationSupportArray = []
 
     this.renderBoard()
   }
@@ -74,41 +76,90 @@ export default class extends Controller {
 
   generateRandomData(event) {
     event.preventDefault()
-
-    this.deleteAllLiveCells()
+    // TODO
+    this.printCopyToClipboardAndEraseAnimationCreationSupportArray()
 
   }
 
-  deleteAllData(event) {
+  deleteAllLiveCellsWithExplosionAnimation(event) {
     event.preventDefault()
 
-    this.deleteAllLiveCells()
-    this.renderBoard()
+    const explosionAnimationArray = [
+      [189, 190, 209, 210],
+      [168, 169, 170, 171, 187, 188, 191, 192, 207, 208, 211, 212, 228, 229, 230, 231],
+      [147, 148, 149, 150, 151, 152, 166, 167, 172, 173, 186, 193, 206, 213, 226, 227, 232, 233, 247, 248, 249, 250, 251, 252],
+      [126, 127, 128, 129, 130, 131, 132, 133, 145, 146, 153, 154, 165, 174, 185, 194, 205, 214, 225, 234, 245, 246, 253, 254, 266, 267, 268, 269, 270, 271, 272, 273],
+      [105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 124, 125, 134, 135, 144, 155, 164, 175, 184, 195, 204, 215, 224, 235, 244, 255, 264, 265, 274, 275, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294],
+      [84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 103, 104, 115, 116, 123, 136, 143, 156, 163, 176, 183, 196, 203, 216, 223, 236, 243, 256, 263, 276, 283, 284, 295, 296, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315],
+      [63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 82, 83, 96, 97, 102, 117, 122, 137, 142, 157, 162, 177, 182, 197, 202, 217, 222, 237, 242, 257, 262, 277, 282, 297, 302, 303, 316, 317, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336],
+      [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 61, 62, 77, 78, 81, 98, 101, 118, 121, 138, 141, 158, 161, 178, 181, 198, 201, 218, 221, 238, 241, 258, 261, 278, 281, 298, 301, 318, 321, 322, 337, 338, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357],
+      [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 58, 59, 60, 79, 80, 99, 100, 119, 120, 139, 140, 159, 160, 179, 180, 199, 200, 219, 220, 239, 240, 259, 260, 279, 280, 299, 300, 319, 320, 339, 340, 341, 358, 359, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378],
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 39, 360, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399]
+    ]
+
+    const explosionColorArray = [
+      "#fc9d03",
+      "#fc8403",
+      "#fc7303",
+      "#fc6203",
+      "#fc5603",
+      "#fc4103",
+      "#fc2c03",
+      "#fc0303",
+      "#fa3e3e",
+      "#ff5454"
+    ]
+
+    let arrayIndex = 0
+    let arraySize = explosionAnimationArray.length
+
+    this.creationAnimationTimer = setInterval(() => {
+
+      this.createLiveCellsFromArray({
+        cellIdsArray: explosionAnimationArray[arrayIndex],
+        cellColor: explosionColorArray[arrayIndex]
+      })
+      arrayIndex++
+
+      if(arrayIndex>=arraySize){
+        if (this.creationAnimationTimer) {
+          clearInterval(this.creationAnimationTimer)
+          arrayIndex = 0
+
+          this.destructionAnimationTimer = setInterval(() => {
+
+            this.deleteLiveCellsFromArray({
+              cellIdsArray: explosionAnimationArray[arrayIndex],
+            })
+            arrayIndex++
+
+            if(arrayIndex>=arraySize){
+              if (this.destructionAnimationTimer) {
+                clearInterval(this.destructionAnimationTimer)
+              }
+            }
+
+          }, this.animationIntervalInMilliseconds)
+        }
+      }
+    }, this.animationIntervalInMilliseconds)
   }
 
   updateCell(event) {
     event.preventDefault()
 
     if (!this.gameStarted) {
-      const cellID = event.target.id
-      const cellXcoordinate = this.getCellXCoordinateFromCellId({ cellID })
-      var cellYcoordinate = 0
-      if (cellID>0){
-        cellYcoordinate = this.getCellYCoordinateFromCellId({ cellID })
-      }
-  
-      if (this.liveCells.hasOwnProperty(cellID)){
-        delete this.liveCells[cellID]
+      const cellId = event.target.id
+
+      if (this.liveCells.hasOwnProperty(cellId)){
+        delete this.liveCells[cellId]
       } else {
         var newCell = this.createNewCell({
-          cellID,
-          cellXcoordinate,
-          cellYcoordinate,
+          cellId,
           alive: true,
         })
-        this.liveCells[cellID] = newCell
+        this.liveCells[cellId] = newCell
       }
-  
       this.renderBoard()
     }
   }
@@ -130,21 +181,21 @@ export default class extends Controller {
             (row==startingXcoord+1)&&(col==startingYcoord+1)){
             continue
           } else {
-            const cellID = this.getCellIdFromCoordinates({coordX:row, coordY:col})
-            if(this.liveCells[cellID]){
+            const cellId = this.getcellIdFromCoordinates({coordX:row, coordY:col})
+            if(this.liveCells[cellId]){
               this.liveCells[liveCell].numOfNeighbors++
             } else {
-              if(!this.deadCellsToBeProcessed[cellID]){
+              if(!this.deadCellsToBeProcessed[cellId]){
                 var newCell = this.createNewCell({
-                  cellID,
+                  cellId,
                   cellXcoordinate: row,
                   cellYcoordinate: col,
                   alive: false,
                   numOfNeighbors: 1
                 })
-                this.deadCellsToBeProcessed[cellID] = newCell
+                this.deadCellsToBeProcessed[cellId] = newCell
               } else {
-                this.deadCellsToBeProcessed[cellID].numOfNeighbors++
+                this.deadCellsToBeProcessed[cellId].numOfNeighbors++
               }
             }
           }
@@ -175,16 +226,16 @@ export default class extends Controller {
     board.innerHTML = ""
 
     let cells = ""
-    let cellID = 0
+    let cellId = 0
 
     for(let row=0; row < this.boardSize; row++) {
       for(let col=0; col < this.boardSize; col++) {
-        if (this.liveCells[cellID]) {
-          cells += `<div data-action="click->game#updateCell" class="board-cell cell-alive" id="${cellID}" style="background:${this.liveCells[cellID].color}"></div>`
+        if (this.liveCells[cellId]) {
+          cells += `<div data-action="click->game#updateCell" class="board-cell cell-alive" id="${cellId}" style="background:${this.liveCells[cellId].color}"></div>`
         } else {
-          cells += `<div data-action="click->game#updateCell" class="board-cell" id="${cellID}"></div>`
+          cells += `<div data-action="click->game#updateCell" class="board-cell" id="${cellId}"></div>`
         }
-        cellID++
+        cellId++
       }
     }
 
@@ -197,19 +248,19 @@ export default class extends Controller {
     return color
   }
 
-  createNewCell({ cellID,
+  createNewCell({ cellId,
                   cellXcoordinate,
                   cellYcoordinate,
                   alive,
                   numOfNeighbors,
                   cellColor}){
     return {
-      id: cellID,
-      xCoord: cellXcoordinate,
-      yCoord: cellYcoordinate,
+      id: cellId,
       alive: alive,
-      numOfNeighbors: numOfNeighbors? numOfNeighbors : 0,
-      color: cellColor? cellColor : this.hexaColorGenerator()
+      xCoord: cellXcoordinate ? cellXcoordinate : this.getCellXCoordinateFromcellId({ cellId }),
+      yCoord: cellYcoordinate ? cellYcoordinate : this.getCellYCoordinateFromcellId({ cellId }),
+      numOfNeighbors: numOfNeighbors ? numOfNeighbors : 0,
+      color: cellColor ? cellColor : this.hexaColorGenerator()
     }
   }
 
@@ -217,15 +268,51 @@ export default class extends Controller {
     this.liveCells = {}
   }
 
-  getCellIdFromCoordinates({coordX, coordY}) {
+  getcellIdFromCoordinates({coordX, coordY}) {
     return (((coordX+1) + (coordY*this.boardSize)) - 1)
   }
 
-  getCellXCoordinateFromCellId({cellID}){
-    return cellID % this.boardSize
+  getCellXCoordinateFromcellId({cellId}){
+    return cellId % this.boardSize
   }
 
-  getCellYCoordinateFromCellId({cellID}){
-    return parseInt(cellID / this.boardSize)
+  getCellYCoordinateFromcellId({cellId}){
+    if (cellId==0){
+      return 0
+    } else {
+      return parseInt(cellId / this.boardSize)
+    }
+  }
+
+  createLiveCellsFromArray({cellIdsArray, cellColor}){
+    cellIdsArray.forEach(cellId => {
+      this.liveCells[cellId] = this.createNewCell({cellId, alive: true, cellColor})
+    })
+    this.renderBoard()
+  }
+
+  deleteLiveCellsFromArray({cellIdsArray}){
+    cellIdsArray.forEach(cellId => {
+      delete this.liveCells[cellId]
+    })
+    this.renderBoard()
+  }
+
+  printCopyToClipboardAndEraseAnimationCreationSupportArray(){
+    console.log(this.animationCreationSupportArray)
+    let animationArraySizeMinusOne = this.animationCreationSupportArray.length - 1
+    let animationArrayString = "["
+
+    this.animationCreationSupportArray.forEach((cellId, index) => {
+      animationArrayString += `${cellId}`
+      if(index<animationArraySizeMinusOne){
+        animationArrayString += ", "
+      }
+    })
+
+    animationArrayString += "]"
+
+    navigator.clipboard.writeText(animationArrayString)
+    this.animationCreationSupportArray = []
   }
 }
