@@ -1,3 +1,9 @@
+/*
+  Author: Michael de Morcerf e Moura
+  LinkedIn: https://www.linkedin.com/in/michaelmoura/
+  Github: https://github.com/mikemorcerf
+*/
+
 import { Controller } from "stimulus"
 import RandExp from "randexp"
 
