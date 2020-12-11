@@ -5,7 +5,6 @@ export default class extends Controller {
   static targets = ["gameBoard", "dataButton", "playButton", "timerContainer", "timerText"]
 
   connect() {
-    this.gameStarted = false
     this.boardSize = 20
     this.totalNumberOfCells = this.boardSize * this.boardSize
     this.liveCells = {}
@@ -24,18 +23,7 @@ export default class extends Controller {
       event.preventDefault()
     }
 
-    if (this.gameStarted) {
-      this.gameStarted = false
-      this.playButtonTarget.textContent="▶︎"
-      this.playButtonTarget.classList.remove('timer--on')
-      this.dataButtonTargets.forEach(dataButton => {
-        dataButton.classList.remove('timer--on')
-      })
-      this.timerContainerTarget.classList.remove('timer--on')
-      this.timerContainerTarget.readOnly = false;
-      this.stopRefreshing()
-    } else {
-      this.gameStarted = true
+    if (this.allowToContinue()) {
       this.playButtonTarget.textContent="◼"
       this.playButtonTarget.classList.add('timer--on')
       this.dataButtonTargets.forEach(dataButton => {
@@ -44,6 +32,15 @@ export default class extends Controller {
       this.timerContainerTarget.classList.add('timer--on')
       this.timerContainerTarget.readOnly = true;
       this.startRefreshing()
+    } else {
+      this.playButtonTarget.textContent="▶︎"
+      this.playButtonTarget.classList.remove('timer--on')
+      this.dataButtonTargets.forEach(dataButton => {
+        dataButton.classList.remove('timer--on')
+      })
+      this.timerContainerTarget.classList.remove('timer--on')
+      this.timerContainerTarget.readOnly = false;
+      this.stopRefreshing()
     }
   }
 
@@ -236,8 +233,7 @@ export default class extends Controller {
   }
 
   allowToContinue(){
-    if( this.gameStarted ||
-        this.refreshTimer ||
+    if( this.refreshTimer ||
         this.cellCreationTimer ||
         this.creationAnimationTimer ||
         this.destructionAnimationTimer ){
