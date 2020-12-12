@@ -1,5 +1,5 @@
 <p align="center">
-   <img alt="conway game of life gif" src="https://res.cloudinary.com/mikemoura/image/upload/v1592009451/diary-app/diary-app_xjnsyx.png"/>
+   <img alt="conway game of life gif" src="https://res.cloudinary.com/mikemoura/image/upload/v1607737309/conways-game-of-life/conway-demo-gif_hiei2f.gif"/>
 </p>
 
 # Conway's Game of Life built with Stimulus js
