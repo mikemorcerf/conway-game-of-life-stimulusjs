@@ -127,3 +127,46 @@ body {
 .timer-text-container {
   align-self: center;
 }
+
+.instructions-container {
+  display: flex;
+  flex-direction: column;
+
+  width: 700px;
+
+  border: solid 1px;
+  border-radius: 5px;
+  background: white;
+
+  margin: 15px 0;
+  padding: 15px;
+
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.instructions-container p:nth-child(2) {
+  color: grey;
+  font-size: 14px;
+}
+
+.instructions-container a {
+  color: grey;
+  text-decoration: none;
+}
+
+.instructions-container h2 {
+  align-self: center;
+}
+
+.instructions-container p:nth-child(n+3) {
+  text-indent: 10px;
+}
+
+.instructions-container ol {
+  margin: 8px 0;
+}
+
+.instructions-container li {
+  margin-left: 50px;
+}

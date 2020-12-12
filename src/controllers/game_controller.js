@@ -2,6 +2,7 @@
   Author: Michael de Morcerf e Moura
   LinkedIn: https://www.linkedin.com/in/michaelmoura/
   Github: https://github.com/mikemorcerf
+  Date: 12/11/2020
 */
 
 import { Controller } from "stimulus"
