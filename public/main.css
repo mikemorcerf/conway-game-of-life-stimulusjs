@@ -155,6 +155,10 @@ body {
   border: solid 1px #dbd9d9;
 }
 
+.instructions-container #red-button {
+  background: #f28d85 !important;
+}
+
 .instructions-container p:nth-child(2) {
   color: grey;
   font-size: 14px;
