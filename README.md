@@ -62,17 +62,17 @@ Play Conway's Game of Life on your brwoser using StimulusJS.
 <ul>
   <li>Click or tap any dead cell on the board to turn it alive</li>
   <li>Click or tap any live cell on the board to kill it</li>
-  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px; border:solid 1px #dbd9d9;">🦖🦕</span> button to generate a random population of size 100</li>
-  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px; border:solid 1px #dbd9d9;">☄️🔥</span> button to destroy all live cells</li>
-  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px; border:solid 1px #dbd9d9;">▶︎</span> button to start the passing of generations</li>
+  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px;">🦖🦕</span> button to generate a random population of size 100</li>
+  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px;">☄️🔥</span> button to destroy all live cells</li>
+  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px;">▶︎</span> button to start the passing of generations</li>
   <li>You cannot interact with the game while the generations are passing</li>
-  <li>Press the <span style="background:#f28d85; height:100%; padding:0 5px;border-radius:5px; border:solid 1px #fa5143;">◼︎</span> button to stop the passing of generations</li>
+  <li>Press the <span style="background:#f28d85; height:100%; padding:0 5px;border-radius:5px;">◼︎</span> button to stop the passing of generations</li>
   <li>You may change the speed in which generations pass by changing the value in the "seconds per cycle" entry</li>
 </ul>
 
 # :bug: Issues
 
-Feel free to **file a new issue** with a respective title and description on the [Diary App](https://github.com/mikemorcerf/diary-app/issues) repository. If you already found a solution to your problem, **I would love to review your pull request**!
+Feel free to **file a new issue** with a respective title and description on the [Conway's Game of Life](https://github.com/mikemorcerf/conway-game-of-life-stimulusjs/issues) repository. If you already found a solution to your problem, **I would love to review your pull request**!
 
 # :closed_book: License
 
