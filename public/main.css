@@ -157,6 +157,7 @@ body {
 
 .instructions-container #red-button {
   background: #f28d85 !important;
+  border-color: #fa5143 !important;
 }
 
 .instructions-container p:nth-child(2) {
