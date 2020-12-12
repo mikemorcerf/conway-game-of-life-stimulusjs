@@ -11,6 +11,7 @@
 
 > Play Conway's Game of Life and summon meteors to decimate a population of square colorful cells
 
+[Working Online Demo](https://stimulus-game-of-life.herokuapp.com/)
 ---
 
 # :pushpin: Table of Contents
@@ -47,7 +48,7 @@ $ cd conway-game-of-life-stimulusjs
 # Install dependencies
 $ yarn install
 
-# Start the backend server
+# Start the server
 $ yarn dev:server
 
 # Open http://localhost:9000/
