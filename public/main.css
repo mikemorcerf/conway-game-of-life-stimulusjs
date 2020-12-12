@@ -145,6 +145,16 @@ body {
   line-height: 22px;
 }
 
+.instructions-container span {
+  background: #c3ffa3;
+  height: 100%;
+
+  padding: 0 5px;
+
+  border-radius: 5px;
+  border: solid 1px #dbd9d9;
+}
+
 .instructions-container p:nth-child(2) {
   color: grey;
   font-size: 14px;
@@ -157,6 +167,7 @@ body {
 
 .instructions-container h2 {
   align-self: center;
+  margin-bottom: 10px;
 }
 
 .instructions-container p:nth-child(n+3) {
