@@ -240,14 +240,10 @@ export default class extends Controller {
   }
 
   allowToContinue(){
-    if( this.refreshTimer ||
-        this.cellCreationTimer ||
-        this.creationAnimationTimer ||
-        this.destructionAnimationTimer ){
-      return false
-    } else {
-      return true
-    }
+    return( !this.refreshTimer &&
+        !this.cellCreationTimer &&
+        !this.creationAnimationTimer &&
+        !this.destructionAnimationTimer )
   }
 
   generateRandomData(event) {
