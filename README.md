@@ -56,17 +56,16 @@ $ yarn dev:server
 # :feet: How to Use
 
 [Working Online Demo](https://stimulus-game-of-life.herokuapp.com/)
-</br>
-Play Conway's Game of Life on your brwoser using StimulusJS.
-</br>
+<br><br>
+Play Conway's Game of Life on your browser using StimulusJS.
 <ul>
   <li>Click or tap any dead cell on the board to turn it alive</li>
   <li>Click or tap any live cell on the board to kill it</li>
-  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px;">🦖🦕</span> button to generate a random population of size 100</li>
-  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px;">☄️🔥</span> button to destroy all live cells</li>
-  <li>Press the <span style="background:#c3ffa3; height:100%; padding:0 5px;border-radius:5px;">▶︎</span> button to start the passing of generations</li>
+  <li>Press the 🦖🦕 button to generate a random population of size 100</li>
+  <li>Press the ☄️🔥 button to destroy all live cells</li>
+  <li>Press the ▶︎ button to start the passing of generations</li>
   <li>You cannot interact with the game while the generations are passing</li>
-  <li>Press the <span style="background:#f28d85; height:100%; padding:0 5px;border-radius:5px;">◼︎</span> button to stop the passing of generations</li>
+  <li>Press the ◼︎ button to stop the passing of generations</li>
   <li>You may change the speed in which generations pass by changing the value in the "seconds per cycle" entry</li>
 </ul>
 
