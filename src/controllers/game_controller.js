@@ -6,7 +6,9 @@
 */
 
 import { Controller } from "stimulus"
-import RandExp from "randexp"
+import BoardRenderer from "../models/board_renderer"
+
+import ConwayGame from "../models/conway_game"
 
 export default class extends Controller {
   static targets = ["gameBoard", "dataButton", "playButton", "timerContainer", "timerText"]
@@ -14,12 +16,12 @@ export default class extends Controller {
   connect() {
     this.boardSize = 20
     this.totalNumberOfCells = this.boardSize * this.boardSize
-    this.liveCells = {}
-    this.deadCellsToBeProcessed = {}
-    this.cellsForNextGeneration = {}
     this.animationIntervalInMilliseconds = 25
     this.creationIntervalInMilliseconds = 1
     this.numberOfRandomCells = 100
+
+    this.conwayGame = new ConwayGame({ boardSize: this.boardSize })
+    this.boardRenderer = new BoardRenderer({ boardSize: this.boardSize })
     //this.animationCreationSupportArray = []
 
     this.renderBoard()
@@ -53,7 +55,8 @@ export default class extends Controller {
 
   startRefreshing() {
     this.refreshTimer = setInterval(() => {
-      this.processLiveCells()
+      this.conwayGame.processLiveCells()
+      this.renderBoard()
     }, (this.timerContainerTarget.value * 1000))
   }
 
@@ -90,160 +93,19 @@ export default class extends Controller {
     if(event) {
       event.preventDefault()
     }
-
+    
     if (this.allowToContinue()) {
       const cellId = event.target.id
-
-      if (this.liveCells.hasOwnProperty(cellId)){
-        delete this.liveCells[cellId]
-      } else {
-        const newCell = this.returnNewCell({
-          cellId,
-          alive: true,
-        })
-        this.liveCells[cellId] = newCell
-      }
+      const cellCoordinates = this.conwayGame.getCellCoordinatesFromId({ cellId })
+      this.conwayGame.flipCell({xCoord: cellCoordinates.xCoord, yCoord: cellCoordinates.yCoord})
+      
       this.renderBoard()
     }
   }
 
-  processLiveCells() {
-    this.deadCellsToBeProcessed = {}
-
-    for (let liveCell in this.liveCells) {
-      this.liveCells[liveCell].numOfNeighbors = 0
-      const startingXcoord = (this.liveCells[liveCell].xCoord - 1)
-      const startingYcoord = (this.liveCells[liveCell].yCoord - 1)
-      
-      for(let row=startingXcoord; row <= startingXcoord+2; row++) {
-        for(let col=startingYcoord; col <= startingYcoord+2; col++) {
-          if((row<0) ||
-            (row>=this.boardSize) ||
-            (col<0) ||
-            (col>=this.boardSize)||
-            (row==startingXcoord+1)&&(col==startingYcoord+1)){
-            continue
-          } else {
-            const cellId = this.getcellIdFromCoordinates({coordX:row, coordY:col})
-            if(this.liveCells[cellId]){
-              this.liveCells[liveCell].numOfNeighbors++
-            } else {
-              if(!this.deadCellsToBeProcessed[cellId]){
-                const newCell = this.returnNewCell({
-                  cellId,
-                  cellXcoordinate: row,
-                  cellYcoordinate: col,
-                  alive: false,
-                  numOfNeighbors: 1
-                })
-                this.deadCellsToBeProcessed[cellId] = newCell
-              } else {
-                this.deadCellsToBeProcessed[cellId].numOfNeighbors++
-              }
-            }
-          }
-        }
-      }
-      const numOfNeighbors = this.liveCells[liveCell].numOfNeighbors
-      if(numOfNeighbors==2 || numOfNeighbors==3) {
-        this.cellsForNextGeneration[liveCell] = this.liveCells[liveCell]
-      }
-    }
-
-    for (let deadCell in this.deadCellsToBeProcessed) {
-      const numOfNeighbors = this.deadCellsToBeProcessed[deadCell].numOfNeighbors
-      if(numOfNeighbors==3) {
-        this.deadCellsToBeProcessed[deadCell].alive = true
-        this.cellsForNextGeneration[deadCell] = this.deadCellsToBeProcessed[deadCell]
-      }
-    }
-
-    this.liveCells = this.cellsForNextGeneration
-    this.cellsForNextGeneration = {}
-
-    this.renderBoard()
-  }
-
   renderBoard() {
     const board = this.gameBoardTarget
-    board.innerHTML = ""
-
-    let cells = ""
-    let cellId = 0
-
-    for(let row=0; row < this.boardSize; row++) {
-      for(let col=0; col < this.boardSize; col++) {
-        if (this.liveCells[cellId]) {
-          cells += `<div data-action="click->game#updateCell" class="board-cell cell-alive" id="${cellId}" style="background:${this.liveCells[cellId].color}"></div>`
-        } else {
-          cells += `<div data-action="click->game#updateCell" class="board-cell" id="${cellId}"></div>`
-        }
-        cellId++
-      }
-    }
-
-    board.innerHTML = cells
-  }
-
-  hexaColorGenerator(){
-    let color = '#'
-    color += new RandExp(/([a-f0-9]{6})/).gen();
-    return color
-  }
-
-  returnNewCell({ cellId,
-                  cellXcoordinate,
-                  cellYcoordinate,
-                  alive,
-                  numOfNeighbors,
-                  cellColor}){
-    return {
-      id: cellId,
-      alive: alive,
-      xCoord: cellXcoordinate ? cellXcoordinate : this.getCellXCoordinateFromcellId({ cellId }),
-      yCoord: cellYcoordinate ? cellYcoordinate : this.getCellYCoordinateFromcellId({ cellId }),
-      numOfNeighbors: numOfNeighbors ? numOfNeighbors : 0,
-      color: cellColor ? cellColor : this.hexaColorGenerator()
-    }
-  }
-
-  deleteAllLiveCells(){
-    this.liveCells = {}
-  }
-
-  getcellIdFromCoordinates({coordX, coordY}) {
-    return (((coordX+1) + (coordY*this.boardSize)) - 1)
-  }
-
-  getCellXCoordinateFromcellId({cellId}){
-    return cellId % this.boardSize
-  }
-
-  getCellYCoordinateFromcellId({cellId}){
-    if (cellId==0){
-      return 0
-    } else {
-      return parseInt(cellId / this.boardSize)
-    }
-  }
-
-  createLiveCellsFromArray({cellIdsArray, cellColor}){
-    cellIdsArray.forEach(cellId => {
-      this.liveCells[cellId] = this.returnNewCell({cellId, alive: true, cellColor})
-    })
-  }
-
-  deleteLiveCellsFromArray({cellIdsArray}){
-    cellIdsArray.forEach(cellId => {
-      delete this.liveCells[cellId]
-    })
-  }
-
-  allowToContinue(){
-    return( !this.refreshTimer &&
-        !this.cellCreationTimer &&
-        !this.creationAnimationTimer &&
-        !this.destructionAnimationTimer )
+    board.innerHTML = this.boardRenderer.getConwayBoardHtml({ conwayGame: this.conwayGame })
   }
 
   generateRandomData(event) {
@@ -252,24 +114,14 @@ export default class extends Controller {
     }
 
     if (this.allowToContinue()) {
-      if(Object.keys(this.liveCells).length > 0) {
-        this.deleteAllLiveCells()
-      }
+      this.conwayGame.deleteAllLiveCells()
   
       this.cellCreationTimer = setInterval(() => {
-        let randomCellId = Math.floor(Math.random() * Math.floor(this.totalNumberOfCells))
-        while(this.liveCells.hasOwnProperty(randomCellId)){
-          randomCellId = Math.floor(Math.random() * Math.floor(this.totalNumberOfCells))
-        }
-  
-        const newCell = this.returnNewCell({
-          cellId: randomCellId,
-          alive: true,
-        })
-        this.liveCells[randomCellId] = newCell
+
+        this.conwayGame.createRandomLiveCell()        
         this.renderBoard()
   
-        if(Object.keys(this.liveCells).length >= this.numberOfRandomCells){
+        if(this.conwayGame.getNumberOfLiveCells() >= this.numberOfRandomCells){
           if (this.cellCreationTimer) {
             clearInterval(this.cellCreationTimer)
             delete this.cellCreationTimer
@@ -367,5 +219,12 @@ export default class extends Controller {
 
     navigator.clipboard.writeText(animationArrayString)
     this.animationCreationSupportArray = []
+  }
+
+  allowToContinue(){
+    return( !this.refreshTimer &&
+            !this.cellCreationTimer &&
+            !this.creationAnimationTimer &&
+            !this.destructionAnimationTimer )
   }
 }

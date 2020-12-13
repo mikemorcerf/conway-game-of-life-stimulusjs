@@ -27,6 +27,7 @@
 
 *  [Express](https://expressjs.com/)
 *  [Node.js](https://nodejs.org/en/)
+*  [Randexp.js](https://github.com/fent/randexp.js)
 *  [Stimulusjs](https://github.com/stimulusjs/stimulus)
 
 # :rocket: Features
